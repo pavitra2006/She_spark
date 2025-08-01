@@ -11,6 +11,9 @@ if not GEMINI_API_KEY:
 genai.configure(api_key=GEMINI_API_KEY)
 
 def ask_gemini(prompt):
-    model = genai.GenerativeModel('models/gemini-1.0-pro-latest')
-    response = model.generate_content(prompt)
-    return response.text
+    try:
+        model = genai.GenerativeModel('models/gemini-1.0-pro-latest')
+        response = model.generate_content(prompt)
+        return response.text
+    except Exception as e:
+        return f"Gemini API error: {e}"
