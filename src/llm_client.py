@@ -2,13 +2,13 @@
 import os
 import google.generativeai as genai
 
-GEMINI_API_KEY = os.getenv("GEMINIAI_API_KEY")
+GEMINI_API_KEY = os.getenv("api_key")
 if not GEMINI_API_KEY:
     raise ValueError("GEMINIAI_API_KEY environment variable not set. Please add it to your .env file.")
 
 genai.configure(api_key=GEMINI_API_KEY)
 
 def ask_llm(prompt):
-    model = genai.GenerativeModel('gemini-pro')
+    model = genai.GenerativeModel('gemini-1.5-flash')
     response = model.generate_content(prompt)
     return response.text
