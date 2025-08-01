@@ -54,15 +54,27 @@ if st.button("Summarize PDF"):
 st.markdown("---")
 st.header("Generate Questions from PDF Content")
 num_questions = st.number_input("How many questions to generate?", min_value=1, max_value=50, value=10)
+question_type = st.selectbox("Select question type", ["Short Answer", "Essay", "Multiple Choice"])
 if st.button("Generate Questions from PDF"):
     if pdf_texts:
         context = "\n".join(pdf_texts)
-        prompt = (
-            f"Generate {num_questions} exam-style questions from the following PDF content. "
-            f"Format as a numbered list.\n{context}"
-        )
+        if question_type == "Short Answer":
+            prompt = (
+                f"Generate {num_questions} short answer questions from the following PDF content. "
+                f"Format as a numbered list.\n{context}"
+            )
+        elif question_type == "Essay":
+            prompt = (
+                f"Generate {num_questions} essay questions from the following PDF content. "
+                f"Format as a numbered list.\n{context}"
+            )
+        else:  # Multiple Choice
+            prompt = (
+                f"Generate {num_questions} multiple choice questions (MCQs) from the following PDF content. "
+                f"Format each question with 4 options and indicate the correct answer.\n{context}"
+            )
         questions = ask_gemini(prompt)
-        st.info(f"**Generated Questions ({num_questions}):**")
+        st.info(f"**Generated {question_type} Questions ({num_questions}):**")
         st.markdown(f"<div style='background-color:#e6f7ff;padding:10px;border-radius:8px'>{questions}</div>", unsafe_allow_html=True)
     else:
         st.warning("No PDF uploaded.")
@@ -89,7 +101,10 @@ if st.button("Get References from PDF"):
         context = "\n".join(pdf_texts)
         prompt = f"Suggest authoritative websites or books for the following PDF content:\n{context}"
         references = ask_gemini(prompt)
-        st.success("**References:**")
-        st.markdown(f"<div style='background-color:#f6ffed;padding:10px;border-radius:8px'>{references}</div>", unsafe_allow_html=True)
+        if "429" in str(references):
+            st.warning("Gemini API quota exceeded. Please wait a minute and try again, or reduce the size of your PDF. See https://ai.google.dev/gemini-api/docs/rate-limits for details.")
+        else:
+            st.success("**References:**")
+            st.markdown(f"<div style='background-color:#f6ffed;padding:10px;border-radius:8px'>{references}</div>", unsafe_allow_html=True)
     else:
         st.warning("No PDF uploaded.")
