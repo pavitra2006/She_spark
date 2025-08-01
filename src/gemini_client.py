@@ -1,15 +1,20 @@
 # src/gemini_client.py
 
 import os
-from dotenv import load_dotenv
 import google.generativeai as genai
 
-# Load environment variables from .env file
-load_dotenv()
+# Try to get API key from Streamlit secrets first, fallback to .env or environment variable
+GEMINIAI_API_KEY = None
+try:
+    import streamlit as st
+    GEMINIAI_API_KEY = st.secrets["GEMINIAI_API_KEY"] if "GEMINIAI_API_KEY" in st.secrets else None
+except ImportError:
+    pass
+if not GEMINIAI_API_KEY:
+    from dotenv import load_dotenv
+    load_dotenv()
+    GEMINIAI_API_KEY = os.getenv("GEMINIAI_API_KEY")
 
-GEMINIAI_API_KEY = os.getenv("GEMINIAI_API_KEY")
-
-# Configure generative AI client
 genai.configure(api_key=GEMINIAI_API_KEY)
 
 def list_gemini_models():
