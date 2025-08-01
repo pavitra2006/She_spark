@@ -19,7 +19,14 @@ def ask_llm(prompt):
         response = model.generate_content(prompt)
         return response.text
     except Exception as e:
-        if "429" in str(e):
+        err_str = str(e)
+        if "429" in err_str:
+            import re
+            match = re.search(r'retry_delay \{ seconds: (\d+) \}', err_str)
+            if match:
+                seconds = match.group(1)
+                return (f"Gemini API quota exceeded. Please wait {seconds} seconds and try again, or reduce the size of your request. "
+                        "See https://ai.google.dev/gemini-api/docs/rate-limits for details.")
             return ("Gemini API quota exceeded. Please wait a minute and try again, or reduce the size of your request. "
                     "See https://ai.google.dev/gemini-api/docs/rate-limits for details.")
         return f"Gemini API error: {e}"
