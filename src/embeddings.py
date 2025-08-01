@@ -1,12 +1,14 @@
 # embeddings.py
-import openai
-from config import OPENAI_API_KEY
+import os
+import google.generativeai as genai
 
-client = openai.OpenAI(api_key=OPENAI_API_KEY)
+GEMINI_API_KEY = os.getenv("GEMINIAI_API_KEY")
+if not GEMINI_API_KEY:
+    raise ValueError("GEMINIAI_API_KEY environment variable not set. Please add it to your .env file.")
+
+genai.configure(api_key=GEMINI_API_KEY)
 
 def get_embedding(text):
-    response = client.embeddings.create(
-        input=[text],
-        model="text-embedding-ada-002"
-    )
-    return response.data[0].embedding
+    model = genai.GenerativeModel('gemini-pro-embeddings')
+    response = model.embed_content([text])
+    return response['embeddings'][0]

@@ -1,12 +1,14 @@
 # llm_client.py
-import openai
-from config import OPENAI_API_KEY
+import os
+import google.generativeai as genai
 
-openai.api_key = OPENAI_API_KEY
+GEMINI_API_KEY = os.getenv("GEMINIAI_API_KEY")
+if not GEMINI_API_KEY:
+    raise ValueError("GEMINIAI_API_KEY environment variable not set. Please add it to your .env file.")
+
+genai.configure(api_key=GEMINI_API_KEY)
 
 def ask_llm(prompt):
-    response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
-        messages=[{"role": "user", "content": prompt}]
-    )
-    return response['choices'][0]['message']['content']
+    model = genai.GenerativeModel('gemini-pro')
+    response = model.generate_content(prompt)
+    return response.text
