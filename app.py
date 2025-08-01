@@ -34,25 +34,49 @@ if st.button("Show Topics"):
     else:
         st.write("No content available. Please upload PDFs first.")
 
-st.header("Summarize Paragraphs")
-paragraphs = st.text_area("Paste paragraphs to summarize")
-if st.button("Summarize") and paragraphs:
-    summary = ask_gemini(f"Summarize the following text for a student:\n{paragraphs}")
-    st.write(f"Summary: {summary}")
 
-st.header("Suggest References")
-reference_query = st.text_input("Enter a topic for references")
-if st.button("Get References") and reference_query:
-    prompt = f"Suggest authoritative websites or books for the topic: {reference_query}"
-    references = ask_gemini(prompt)
-    st.write(references)
+st.header("Summarize PDF Content")
+if st.button("Summarize PDF"):
+    if pdf_texts:
+        context = "\n".join(pdf_texts)
+        summary = ask_gemini(f"Summarize the following PDF content for a student:\n{context}")
+        st.write(f"Summary: {summary}")
+    else:
+        st.write("No PDF uploaded.")
 
-st.header("Generate Diagram (Flowchart)")
-diagram_text = st.text_area("Enter paragraph for diagram generation")
-if st.button("Generate Diagram") and diagram_text:
-    diagram_prompt = f"Describe a flowchart for the following process or concept:\n{diagram_text}"
-    diagram_desc = ask_gemini(diagram_prompt)
-    st.write(f"Flowchart description: {diagram_desc}")
+
+st.header("Suggest References for PDF Content")
+if st.button("Get References from PDF"):
+    if pdf_texts:
+        context = "\n".join(pdf_texts)
+        prompt = f"Suggest authoritative websites or books for the following PDF content:\n{context}"
+        references = ask_gemini(prompt)
+        st.write(references)
+    else:
+        st.write("No PDF uploaded.")
+
+
+st.header("Generate Diagrams for PDF Topics")
+if st.button("Generate Diagrams from PDF"):
+    if pdf_texts:
+        context = "\n".join(pdf_texts)
+        diagram_prompt = f"For the following PDF content, generate a flowchart or diagram description for each main topic:\n{context}"
+        diagram_desc = ask_gemini(diagram_prompt)
+        st.write(f"Diagram descriptions: {diagram_desc}")
+    else:
+        st.write("No PDF uploaded.")
+st.header("Generate Viva Questions (Google Form) from PDF")
+if st.button("Generate Viva Questions Google Form"):
+    if pdf_texts:
+        context = "\n".join(pdf_texts)
+        viva_prompt = (
+            f"From the following PDF content, generate up to 50 viva questions suitable for a Google Form. "
+            f"Format the output as a list of questions, and provide a Google Form creation link template if possible.\n{context}"
+        )
+        viva_questions = ask_gemini(viva_prompt)
+        st.write(viva_questions)
+    else:
+        st.write("No PDF uploaded.")
 
 st.header("Find Common Topics Across PDFs")
 if st.button("Show Common Topics") and uploaded_files:
