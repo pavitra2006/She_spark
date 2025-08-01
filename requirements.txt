@@ -1,0 +1,6 @@
+# requirements.txt
+flask
+python-dotenv
+PyPDF2
+openai
+faiss-cpu
