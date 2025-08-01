@@ -31,7 +31,14 @@ st.markdown("---")
 st.header("Extract Topics from PDFs")
 if st.button("Show Topics"):
     if pdf_texts:
-        prompt = f"Extract and list the main topics from the following academic text:\n{chr(10).join(pdf_texts)}"
+        if len(pdf_texts) == 1:
+            prompt = f"Extract and list the main topics from the following academic text:\n{pdf_texts[0]}"
+        else:
+            prompt = (
+                f"Extract and list the main topics from each of the following academic PDFs separately. "
+                f"Label the topics for each PDF as PDF1, PDF2, etc.\n"
+                + "\n---\n".join([f"PDF{i+1}:\n{text}" for i, text in enumerate(pdf_texts)])
+            )
         topics = ask_gemini(prompt)
         st.success("**Extracted Topics:**")
         st.markdown(f"<div style='background-color:#f6ffed;padding:10px;border-radius:8px'>{topics}</div>", unsafe_allow_html=True)
@@ -43,8 +50,15 @@ st.markdown("---")
 st.header("Summarize PDF Content")
 if st.button("Summarize PDF"):
     if pdf_texts:
-        context = "\n".join(pdf_texts)
-        summary = ask_gemini(f"Summarize the following PDF content for a student:\n{context}")
+        if len(pdf_texts) == 1:
+            summary = ask_gemini(f"Summarize the following PDF content for a student:\n{pdf_texts[0]}")
+        else:
+            prompt = (
+                f"Summarize the content of each of the following PDFs separately. "
+                f"Label the summary for each PDF as PDF1, PDF2, etc.\n"
+                + "\n---\n".join([f"PDF{i+1}:\n{text}" for i, text in enumerate(pdf_texts)])
+            )
+            summary = ask_gemini(prompt)
         st.success("**Summary:**")
         st.markdown(f"<div style='background-color:#fffbe6;padding:10px;border-radius:8px'>{summary}</div>", unsafe_allow_html=True)
     else:
@@ -86,7 +100,7 @@ if st.button("Extract Common Info from PDFs"):
         context = "\n".join(pdf_texts)
         prompt = (
             f"Compare the following PDF contents and extract the main topics, facts, or information that are common to all. "
-            f"Highlight the commonalities clearly.\n{context}"
+            f"For each common item, mention which content belongs to which PDF (e.g., PDF1, PDF2, ...). Highlight the commonalities clearly.\n{context}"
         )
         common_info = ask_gemini(prompt)
         st.info("**Common Information Across PDFs:**")
