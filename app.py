@@ -21,7 +21,7 @@ with tab1:
         st.success(f"Uploaded and processed {len(uploaded_files)} PDF(s)")
 
     st.header("Ask a Question")
-    question = st.text_input("Enter your question about the uploaded PDFs")
+    question = st.text_input("Enter your question about the uploaded PDFs", key="main_question")
     if st.button("Get Answer") and question:
         context = "\n".join(pdf_texts)
         prompt = f"Answer this question based on the following context from uploaded PDFs:\n{context}\nQuestion: {question}"
@@ -57,15 +57,15 @@ with tab1:
             st.write("No PDF uploaded.")
 
     st.header("Generate Diagrams for PDF Topics")
-    concept = st.text_input("Enter a concept from the PDF for image/diagram generation")
+    concept = st.text_input("Enter a concept from the PDF for image/diagram generation", key="concept_image")
     if st.button("Generate Image for Concept") and concept:
         image_prompt = f"Generate a diagram or image for the concept: {concept} from the following PDF content:\n{chr(10).join(pdf_texts)}"
         image_desc = ask_gemini(image_prompt)
         st.write(f"Image/Diagram description: {image_desc}")
 
     st.header("Generate MCQ Questions for Google Form from PDF")
-    mcq_topic = st.text_input("Enter topic or concept from PDF for MCQ generation")
-    num_mcq = st.slider("Number of MCQs to generate", min_value=1, max_value=50, value=10)
+    mcq_topic = st.text_input("Enter topic or concept from PDF for MCQ generation", key="mcq_topic")
+    num_mcq = st.slider("Number of MCQs to generate", min_value=1, max_value=50, value=10, key="mcq_slider")
     if st.button("Generate MCQs") and mcq_topic:
         context = "\n".join(pdf_texts)
         mcq_prompt = (
@@ -118,37 +118,3 @@ if st.button("Get References from PDF"):
         prompt = f"Suggest authoritative websites or books for the following PDF content:\n{context}"
         references = ask_gemini(prompt)
         st.write(references)
-    else:
-        st.write("No PDF uploaded.")
-
-
-st.header("Generate Diagrams for PDF Topics")
-if st.button("Generate Diagrams from PDF"):
-    if pdf_texts:
-        context = "\n".join(pdf_texts)
-        diagram_prompt = f"For the following PDF content, generate a flowchart or diagram description for each main topic:\n{context}"
-        diagram_desc = ask_gemini(diagram_prompt)
-        st.write(f"Diagram descriptions: {diagram_desc}")
-    else:
-        st.write("No PDF uploaded.")
-st.header("Generate Viva Questions (Google Form) from PDF")
-if st.button("Generate Viva Questions Google Form"):
-    if pdf_texts:
-        context = "\n".join(pdf_texts)
-        viva_prompt = (
-            f"From the following PDF content, generate up to 50 viva questions suitable for a Google Form. "
-            f"Format the output as a list of questions, and provide a Google Form creation link template if possible.\n{context}"
-        )
-        viva_questions = ask_gemini(viva_prompt)
-        st.write(viva_questions)
-    else:
-        st.write("No PDF uploaded.")
-
-st.header("Find Common Topics Across PDFs")
-if st.button("Show Common Topics") and uploaded_files:
-    if pdf_texts:
-        prompt = f"Find and list common topics across these academic texts:\n{chr(10).join(pdf_texts)}"
-        common_topics = ask_gemini(prompt)
-        st.write(common_topics)
-    else:
-        st.write("No content available. Please upload PDFs first.")
