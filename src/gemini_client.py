@@ -7,8 +7,7 @@ import google.generativeai as genai
 # Load environment variables from .env file
 load_dotenv()
 
-# Get Gemini API key from .env using the key name "api_key"
-GEMINIAI_API_KEY = os.getenv("api_key")
+GEMINIAI_API_KEY = os.getenv("GEMINIAI_API_KEY")
 
 # Configure generative AI client
 genai.configure(api_key=GEMINIAI_API_KEY)
@@ -22,7 +21,7 @@ def list_gemini_models():
 
 def ask_gemini(prompt):
     if not GEMINIAI_API_KEY:
-        return "Error: Gemini API key not set. Please ensure 'api_key' is defined in your .env file."
+        return "Error: Gemini API key not set. Please ensure 'GEMINIAI_API_KEY' is defined in your .env file."
     try:
         model = genai.GenerativeModel('gemini-2.5-flash')
         response = model.generate_content(prompt)
