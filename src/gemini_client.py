@@ -1,14 +1,24 @@
 # src/gemini_client.py
+
 import os
-from dotenv import load_dotenv
 import google.generativeai as genai
 
-load_dotenv()
-GEMINI_API_KEY = os.getenv("GEMINIAI_API_KEY")
-if not GEMINI_API_KEY:
-    raise ValueError("GEMINIAI_API_KEY environment variable not set. Please add it to your .env file.")
+# Try to get API key from Streamlit secrets first, fallback to .env or environment variable
+try:
+    import streamlit as st
+    GEMINIAI_API_KEY = st.secrets["GEMINIAI_API_KEY"] if "GEMINIAI_API_KEY" in st.secrets else None
+except ImportError:
+    GEMINIAI_API_KEY = None
 
-genai.configure(api_key=GEMINI_API_KEY)
+if not GEMINIAI_API_KEY:
+    from dotenv import load_dotenv
+    load_dotenv()
+    GEMINIAI_API_KEY = os.getenv("GEMINIAI_API_KEY")
+
+if not GEMINIAI_API_KEY:
+    raise ValueError("GEMINIAI_API_KEY not set. Please add it to Streamlit secrets or your .env file.")
+
+genai.configure(api_key=GEMINIAI_API_KEY)
 
 
 def list_gemini_models():
