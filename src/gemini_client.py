@@ -24,7 +24,7 @@ def ask_gemini(prompt):
     if not GEMINIAI_API_KEY:
         return "Error: Gemini API key not set. Please ensure 'api_key' is defined in your .env file."
     try:
-        model = genai.GenerativeModel('gemini-1.5-flash')
+        model = genai.GenerativeModel('gemini-2.5-flash')
         response = model.generate_content(prompt)
         return response.text
     except Exception as e:
