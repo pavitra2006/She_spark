@@ -68,6 +68,21 @@ if st.button("Generate Questions from PDF"):
         st.warning("No PDF uploaded.")
 
 st.markdown("---")
+st.header("Extract Common Information from Multiple PDFs")
+if st.button("Extract Common Info from PDFs"):
+    if len(pdf_texts) >= 2:
+        context = "\n".join(pdf_texts)
+        prompt = (
+            f"Compare the following PDF contents and extract the main topics, facts, or information that are common to all. "
+            f"Highlight the commonalities clearly.\n{context}"
+        )
+        common_info = ask_gemini(prompt)
+        st.info("**Common Information Across PDFs:**")
+        st.markdown(f"<div style='background-color:#e6f7ff;padding:10px;border-radius:8px'>{common_info}</div>", unsafe_allow_html=True)
+    else:
+        st.warning("Please upload at least two PDFs to extract common information.")
+
+st.markdown("---")
 st.header("Suggest References for PDF Content")
 if st.button("Get References from PDF"):
     if pdf_texts:
