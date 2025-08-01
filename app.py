@@ -1,19 +1,4 @@
-# StudyMate/
-# ├── app.py                 (New File)
-# ├── requirements.txt       (New File)
-# ├── .env                  (New File)
-# ├── config.py             (New File)
-# ├── src/                  (New Folder)
-# │   ├── _init_.py       (New File)
-# │   ├── pdf_processor.py  (New File)
-# │   ├── text_chunker.py   (New File)
-# │   ├── embeddings.py     (New File)
-# │   ├── vector_store.py   (New File)
-# │   ├── llm_client.py     (New File)
-
-# │   └── qa_system.py      (New File)
-# └── README.md             (New File)# app.py
-
+# app.py
 import streamlit as st
 from src.qa_system import QASystem
 from src.gemini_client import ask_gemini
