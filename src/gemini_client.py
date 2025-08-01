@@ -10,6 +10,14 @@ if not GEMINI_API_KEY:
 
 genai.configure(api_key=GEMINI_API_KEY)
 
+
+def list_gemini_models():
+    try:
+        models = genai.list_models()
+        return [m.name for m in models]
+    except Exception as e:
+        return f"Gemini API error: {e}"
+
 def ask_gemini(prompt):
     try:
         model = genai.GenerativeModel('gemini-pro')
