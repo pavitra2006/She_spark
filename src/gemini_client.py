@@ -12,7 +12,7 @@ genai.configure(api_key=GEMINI_API_KEY)
 
 def ask_gemini(prompt):
     try:
-        model = genai.GenerativeModel('models/gemini-1.0-pro-latest')
+        model = genai.GenerativeModel('gemini-pro')
         response = model.generate_content(prompt)
         return response.text
     except Exception as e:
