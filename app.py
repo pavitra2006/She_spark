@@ -16,7 +16,7 @@
 
 import streamlit as st
 from src.qa_system import QASystem
-# ...existing code...
+from src.gemini_client import ask_gemini
 
 st.set_page_config(page_title="StudyMate Academic Assistant", layout="wide")
 st.title("📚 StudyMate: AI-Powered Academic Assistant")
@@ -35,33 +35,45 @@ if uploaded_files:
 st.header("Ask a Question")
 question = st.text_input("Enter your question about the uploaded PDFs")
 if st.button("Get Answer") and question:
-    answer = qa.answer_question(question)
+    context = qa.vector_store.texts if hasattr(qa, 'vector_store') else []
+    prompt = f"Answer this question based on the following context from uploaded PDFs:\n{context}\nQuestion: {question}"
+    answer = ask_gemini(prompt)
     st.markdown(f"**Answer:** {answer}")
 
 st.header("Extract Topics from PDFs")
 if st.button("Show Topics"):
-    # Dummy implementation: In real code, extract topics using NLP
-    st.write(["Topic 1", "Topic 2", "Topic 3"])  # Replace with actual topic extraction
+    if hasattr(qa, 'vector_store') and qa.vector_store.texts:
+        prompt = f"Extract and list the main topics from the following academic text:\n{qa.vector_store.texts}"
+        topics = ask_gemini(prompt)
+        st.write(topics)
+    else:
+        st.write("No content available. Please upload PDFs first.")
 
 st.header("Summarize Paragraphs")
 paragraphs = st.text_area("Paste paragraphs to summarize")
 if st.button("Summarize") and paragraphs:
-    # Dummy implementation: In real code, use LLM for summarization
-    st.write("Summary: ...")  # Replace with actual summary
+    summary = ask_gemini(f"Summarize the following text for a student:\n{paragraphs}")
+    st.write(f"Summary: {summary}")
 
 st.header("Suggest References")
 reference_query = st.text_input("Enter a topic for references")
 if st.button("Get References") and reference_query:
-    # Dummy implementation: In real code, use web search APIs
-    st.write(["https://en.wikipedia.org/wiki/", "Book: Example Reference"])  # Replace with actual references
+    prompt = f"Suggest authoritative websites or books for the topic: {reference_query}"
+    references = ask_gemini(prompt)
+    st.write(references)
 
 st.header("Generate Diagram (Flowchart)")
 diagram_text = st.text_area("Enter paragraph for diagram generation")
 if st.button("Generate Diagram") and diagram_text:
-    # Dummy implementation: In real code, use diagram generation APIs
-    st.image("https://via.placeholder.com/400x200?text=Flowchart")  # Replace with actual diagram
+    diagram_prompt = f"Describe a flowchart for the following process or concept:\n{diagram_text}"
+    diagram_desc = ask_gemini(diagram_prompt)
+    st.write(f"Flowchart description: {diagram_desc}")
 
 st.header("Find Common Topics Across PDFs")
 if st.button("Show Common Topics") and uploaded_files:
-    # Dummy implementation: In real code, compare topics across PDFs
-    st.write(["Common Topic 1", "Common Topic 2"])  # Replace with actual common topics
+    if hasattr(qa, 'vector_store') and qa.vector_store.texts:
+        prompt = f"Find and list common topics across these academic texts:\n{qa.vector_store.texts}"
+        common_topics = ask_gemini(prompt)
+        st.write(common_topics)
+    else:
+        st.write("No content available. Please upload PDFs first.")
