@@ -1,6 +1,5 @@
 # requirements.txt
-flask
+streamlit
 python-dotenv
-PyPDF2
-openai
-faiss-cpu
+PyMuPDF
+google-generativeai
