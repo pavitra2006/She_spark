@@ -4,9 +4,14 @@ import os
 import google.generativeai as genai
 
 # Try to get API key from Streamlit secrets first, fallback to .env or environment variable
+
+GEMINIAI_API_KEY = None
 try:
     import streamlit as st
-    GEMINIAI_API_KEY = st.secrets["GEMINIAI_API_KEY"] if "GEMINIAI_API_KEY" in st.secrets else None
+    try:
+        GEMINIAI_API_KEY = st.secrets["GEMINIAI_API_KEY"]
+    except (st.runtime.secrets.StreamlitSecretNotFoundError, KeyError, AttributeError):
+        GEMINIAI_API_KEY = None
 except ImportError:
     GEMINIAI_API_KEY = None
 
