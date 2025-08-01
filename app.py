@@ -1,34 +1,34 @@
 # app.py
 import streamlit as st
-from src.qa_system import QASystem
 from src.gemini_client import ask_gemini
 
 st.set_page_config(page_title="StudyMate Academic Assistant", layout="wide")
 st.title("📚 StudyMate: AI-Powered Academic Assistant")
 
-qa = QASystem()
-
 uploaded_files = st.file_uploader("Upload one or more PDF files", type=["pdf"], accept_multiple_files=True)
-
+pdf_texts = []
 if uploaded_files:
+    import fitz  # PyMuPDF
     for uploaded_file in uploaded_files:
         with open(f"/tmp/{uploaded_file.name}", "wb") as f:
             f.write(uploaded_file.getbuffer())
-        qa.ingest_pdf(f"/tmp/{uploaded_file.name}")
+        doc = fitz.open(f"/tmp/{uploaded_file.name}")
+        text = "\n".join([page.get_text() for page in doc])
+        pdf_texts.append(text)
     st.success(f"Uploaded and processed {len(uploaded_files)} PDF(s)")
 
 st.header("Ask a Question")
 question = st.text_input("Enter your question about the uploaded PDFs")
 if st.button("Get Answer") and question:
-    context = qa.vector_store.texts if hasattr(qa, 'vector_store') else []
+    context = "\n".join(pdf_texts)
     prompt = f"Answer this question based on the following context from uploaded PDFs:\n{context}\nQuestion: {question}"
     answer = ask_gemini(prompt)
     st.markdown(f"**Answer:** {answer}")
 
 st.header("Extract Topics from PDFs")
 if st.button("Show Topics"):
-    if hasattr(qa, 'vector_store') and qa.vector_store.texts:
-        prompt = f"Extract and list the main topics from the following academic text:\n{qa.vector_store.texts}"
+    if pdf_texts:
+        prompt = f"Extract and list the main topics from the following academic text:\n{chr(10).join(pdf_texts)}"
         topics = ask_gemini(prompt)
         st.write(topics)
     else:
@@ -56,8 +56,8 @@ if st.button("Generate Diagram") and diagram_text:
 
 st.header("Find Common Topics Across PDFs")
 if st.button("Show Common Topics") and uploaded_files:
-    if hasattr(qa, 'vector_store') and qa.vector_store.texts:
-        prompt = f"Find and list common topics across these academic texts:\n{qa.vector_store.texts}"
+    if pdf_texts:
+        prompt = f"Find and list common topics across these academic texts:\n{chr(10).join(pdf_texts)}"
         common_topics = ask_gemini(prompt)
         st.write(common_topics)
     else:
