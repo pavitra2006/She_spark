@@ -20,8 +20,8 @@ if not GEMINIAI_API_KEY:
     load_dotenv()
     GEMINIAI_API_KEY = os.getenv("GEMINIAI_API_KEY")
 
-if not GEMINIAI_API_KEY:
-    raise ValueError("GEMINIAI_API_KEY not set. Please add it to Streamlit secrets or your .env file.")
+
+# Do not raise error if API key is missing; handle in ask_gemini
 
 genai.configure(api_key=GEMINIAI_API_KEY)
 
@@ -34,6 +34,8 @@ def list_gemini_models():
         return f"Gemini API error: {e}"
 
 def ask_gemini(prompt):
+    if not GEMINIAI_API_KEY:
+        return "Error: Gemini API key not set. Please add it to Streamlit secrets or your .env file."
     try:
         model = genai.GenerativeModel('gemini-1.5-flash')
         response = model.generate_content(prompt)
