@@ -9,10 +9,16 @@ tab1, tab2 = st.tabs(["Main Features", "Google Form MCQ Preview"])
 
 with tab1:
     uploaded_files = st.file_uploader("Upload one or more PDF files", type=["pdf"], accept_multiple_files=True)
-    if 'mcq_questions' in st.session_state:
-        st.write(st.session_state['mcq_questions'])
-    else:
-        st.write("No MCQs generated yet. Use the MCQ generator in the Main Features tab.")
+    pdf_texts = []
+    if uploaded_files:
+        import fitz  # PyMuPDF
+        for uploaded_file in uploaded_files:
+            with open(f"/tmp/{uploaded_file.name}", "wb") as f:
+                f.write(uploaded_file.getbuffer())
+            doc = fitz.open(f"/tmp/{uploaded_file.name}")
+            text = "\n".join([page.get_text() for page in doc])
+            pdf_texts.append(text)
+        st.success(f"Uploaded and processed {len(uploaded_files)} PDF(s)")
 
 st.header("Ask a Question")
 question = st.text_input("Enter your question about the uploaded PDFs")
