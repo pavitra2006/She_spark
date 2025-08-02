@@ -25,7 +25,11 @@ if st.button("Get Answer") and question:
     prompt = f"Answer this question based on the following context from uploaded PDFs:\n{context}\nQuestion: {question}"
     answer = ask_gemini(prompt)
     st.info("**Answer:**")
-    st.markdown(f"<div style='background-color:#e6f7ff;padding:10px;border-radius:8px'><b>{answer}</b></div>", unsafe_allow_html=True)
+    st.markdown(f"""
+        <div style='background-color:var(--secondary-background-color);color:var(--text-color);padding:10px;border-radius:8px'>
+            <b>{answer}</b>
+        </div>
+    """, unsafe_allow_html=True)
 
 st.markdown("---")
 st.header("Extract Topics from PDFs")
@@ -41,7 +45,11 @@ if st.button("Show Topics"):
             )
         topics = ask_gemini(prompt)
         st.success("**Extracted Topics:**")
-        st.markdown(f"<div style='background-color:#f6ffed;padding:10px;border-radius:8px'>{topics}</div>", unsafe_allow_html=True)
+        st.markdown(f"""
+            <div style='background-color:var(--secondary-background-color);color:var(--text-color);padding:10px;border-radius:8px'>
+                {topics}
+            </div>
+        """, unsafe_allow_html=True)
     else:
         st.warning("No content available. Please upload PDFs first.")
 
@@ -60,7 +68,11 @@ if st.button("Summarize PDF"):
             )
             summary = ask_gemini(prompt)
         st.success("**Summary:**")
-        st.markdown(f"<div style='background-color:#fffbe6;padding:10px;border-radius:8px'>{summary}</div>", unsafe_allow_html=True)
+        st.markdown(f"""
+            <div style='background-color:var(--secondary-background-color);color:var(--text-color);padding:10px;border-radius:8px'>
+                {summary}
+            </div>
+        """, unsafe_allow_html=True)
     else:
         st.warning("No PDF uploaded.")
 
@@ -89,7 +101,11 @@ if st.button("Generate Questions from PDF"):
             )
         questions = ask_gemini(prompt)
         st.info(f"**Generated {question_type} Questions ({num_questions}):**")
-        st.markdown(f"<div style='background-color:#e6f7ff;padding:10px;border-radius:8px'>{questions}</div>", unsafe_allow_html=True)
+        st.markdown(f"""
+            <div style='background-color:var(--secondary-background-color);color:var(--text-color);padding:10px;border-radius:8px'>
+                {questions}
+            </div>
+        """, unsafe_allow_html=True)
     else:
         st.warning("No PDF uploaded.")
 
@@ -104,7 +120,11 @@ if st.button("Extract Common Info from PDFs"):
         )
         common_info = ask_gemini(prompt)
         st.info("**Common Information Across PDFs:**")
-        st.markdown(f"<div style='background-color:#e6f7ff;padding:10px;border-radius:8px'>{common_info}</div>", unsafe_allow_html=True)
+        st.markdown(f"""
+            <div style='background-color:var(--secondary-background-color);color:var(--text-color);padding:10px;border-radius:8px'>
+                {common_info}
+            </div>
+        """, unsafe_allow_html=True)
     else:
         st.warning("Please upload at least two PDFs to extract common information.")
 
@@ -119,6 +139,10 @@ if st.button("Get References from PDF"):
             st.warning("Gemini API quota exceeded. Please wait a minute and try again, or reduce the size of your PDF. See https://ai.google.dev/gemini-api/docs/rate-limits for details.")
         else:
             st.success("**References:**")
-            st.markdown(f"<div style='background-color:#f6ffed;padding:10px;border-radius:8px'>{references}</div>", unsafe_allow_html=True)
+            st.markdown(f"""
+                <div style='background-color:var(--secondary-background-color);color:var(--text-color);padding:10px;border-radius:8px'>
+                    {references}
+                </div>
+            """, unsafe_allow_html=True)
     else:
         st.warning("No PDF uploaded.")
