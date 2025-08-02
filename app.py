@@ -110,7 +110,7 @@ if st.button("Generate Questions from PDF"):
         st.info(f"**Generated {question_type} Questions ({num_questions}):**")
         st.markdown(f"""
             <div style='background-color:var(--secondary-background-color);color:var(--text-color);padding:10px;border-radius:8px'>
-                {questions}
+                <pre style='background: none; color: inherit; font-family: inherit; font-size: inherit; margin: 0; padding: 0;'>{questions}</pre>
             </div>
         """, unsafe_allow_html=True)
     else:
