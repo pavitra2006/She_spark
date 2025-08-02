@@ -97,13 +97,8 @@ if st.button("Generate Questions from PDF"):
         else:  # Multiple Choice
             prompt = (
                 f"Generate {num_questions} multiple choice questions (MCQs) from the following PDF content. "
-<<<<<<< HEAD
-                f"For each question, list the 4 options one by one in a new line, and indicate the correct answer at the end. Format example:\n"
-                f"1. Question text\nA. Option 1\nB. Option 2\nC. Option 3\nD. Option 4\nCorrect Answer: <option letter>\n"
-=======
                 f"For each question, list the question followed by options A, B, C, D (each on a new line, in order), then indicate the correct answer on a new line as 'Answer: <option letter>'. Format as:\n"
                 f"1. Question text\nA. Option 1\nB. Option 2\nC. Option 3\nD. Option 4\nAnswer: <option letter>\n...\n"
->>>>>>> a2d4bcb (updated the feature)
                 f"Use this format for all questions.\n{context}"
             )
         questions = ask_gemini(prompt)
